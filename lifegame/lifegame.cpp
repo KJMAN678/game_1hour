@@ -121,6 +121,7 @@ void PatternTransfer(
         for (int x = 0; x < _srcWidth; x++)
         {
             field[_destY + y][_destX + x] = _pPattern[y * _srcWidth + x];
+            printf("%d", _pPattern[y * _srcWidth + x]);
         }
     }
 }
@@ -144,20 +145,20 @@ int main(void)
 
     clock_t lastClock = clock(); // 前回の経過時間を宣言する
 
-    while (1)
-    {
-        clock_t newClock = clock(); // 現在の経過時間を宣言する
-        if (newClock < lastClock + INTERVAL)
-        {
-            continue;
-        }
+    // while (1)
+    // {
+    //     clock_t newClock = clock(); // 現在の経過時間を宣言する
+    //     if (newClock < lastClock + INTERVAL)
+    //     {
+    //         continue;
+    //     }
 
-        lastClock = newClock;
+    //     lastClock = newClock;
 
-        // getchar();
-        DrawField();
-        StepSimulation();
-    }
+    //     // getchar();
+    //     DrawField();
+    //     StepSimulation();
+    // }
 
-    return 0;
+    // return 0;
 }
