@@ -23,14 +23,24 @@ fn draw_field(field: Vec<Vec<bool>>) {
 }
 
 // 対象のセルと隣接する生きたセルの数を取得する
-fn get_living_cells_count(_x: usize, _y: usize, field: Vec<Vec<bool>>) -> usize {
+fn get_living_cells_count(_x: i32, _y: i32, field: Vec<Vec<bool>>) -> usize {
 
     let mut count: usize = 0;
 
-    for y in 0.._y {
+    // 対象のセルの上下1マスを反復
+    for y in _y-1..=_y+1 {
 
-        for x in 0.._x {
-            if field[y][x] {
+        let rooped_y: i32 = (FIELD_HEIGHT as i32 + y as i32) % FIELD_HEIGHT as i32;
+
+        // 対象のセルの左右1マスを反復する
+        for x in _x-1..=_x+1 {
+
+            let rooped_x: i32 = (FIELD_WIDTH as i32 + x as i32) % FIELD_WIDTH as i32;
+
+            // 対象の座標が中心のセルだった場合は処理しない
+            if rooped_x == _x && rooped_y == _y {
+                continue;
+            } else if field[rooped_y as usize][rooped_x as usize] {
                 count += 1;
             }
         }
@@ -50,14 +60,14 @@ fn step_simulation(field: Vec<Vec<bool>>) -> Vec<Vec<bool>> {
 
         for x in 0..FIELD_WIDTH {
 
-            let living_cell_count: usize = get_living_cells_count(x, y, field.to_vec());
+            let living_cell_count: usize = get_living_cells_count(x as i32, y as i32, field.to_vec());
 
             if living_cell_count <= 1 {
                 // 対象のセルを死滅させる
                 next_field[y][x] = false;
             } else if living_cell_count == 2 {
                 // 現状維持
-                next_field[y][x] = field[y][x]
+                next_field[y][x] = field[y][x];
             } else if living_cell_count == 3 {
                 // 対象のセルを誕生/生存させる
                 next_field[y][x] = true;
@@ -95,7 +105,7 @@ fn main() {
     let pattern: Vec<Vec<bool>> = vec![
         vec![false, false, false, false, false, false, false, false, false, false],
         vec![false, false, false, false, false, false, false, true,  false, false],
-        vec![false, false, false, false, false, true,  false, true,  true,  false],
+        vec![false, false, false, false, false, true,  false, true,  false, false],
         vec![false, false, false, false, false, true,  false, true,  false, false],
         vec![false, false, false, false, false, true,  false, false, false, false],
         vec![false, false, false, true,  false, false, false, false, false, false],
@@ -115,7 +125,7 @@ fn main() {
     loop {
         draw_field(field.to_vec());
         field = step_simulation(field.to_vec());
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(10));
     }
 
 }
